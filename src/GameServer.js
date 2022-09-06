@@ -295,9 +295,9 @@ GameServer.prototype.onClientSocketOpen = function (ws, upgradeReq) {
     ws.on('close', onClose);
     this.clients.push(ws);
 
-    ws.playerTracker.origen = punycode.toUnicode(upgradeReq.headers.origin.replace(/^https?\:\/\//i, ""));
+    ws.playerTracker.origin = punycode.toUnicode(upgradeReq.headers.origin.replace(/^https?\:\/\//i, ""));
 
-    Logger.warn("\u001B[32mClient connected " + ws.remoteAddress + ":" + ws.remotePort + " [origin: " + ws.playerTracker.origen + "]");
+    Logger.warn("\u001B[32mClient connected " + ws.remoteAddress + ":" + ws.remotePort + " [origin: " + ws.playerTracker.origin + "]");
 
     // Do not put this on Git!
     if ('192.168.178.29' == ws.remoteAddress) ws.playerTracker.setName('\u2728\u2726 \uD835\uDCD9\uD835\uDCEA\uD835\uDCFB\uD835\uDCEA \u2728\u2726');
@@ -689,7 +689,7 @@ GameServer.prototype.spawnPlayer = function (player, pos, size) {
         info += " (Skin:" + player._skin.slice(1) + ")";
     }
 
-    if (player.origen) this.sendChatMessage(null, null, player._name + ' from ' + player.origen + ' joined the game!');
+    if (player.origin) this.sendChatMessage(null, null, player._name + ' from ' + player.origin + ' joined the game!');
 };
 
 GameServer.prototype.spawnMinions = function () {
@@ -2086,7 +2086,7 @@ GameServer.prototype.AdminSendPlayers = function () {
             if (player.cells.length < 1) { score = 0; color = '#000000'; player._score = 0; }
             var myip = sockets[i].remoteAddress;
 
-            result1[user] = [player.pID, name, score, color, myip, player.origen];
+            result1[user] = [player.pID, name, score, color, myip, player.origin];
             result2[user] = [player.pID, name, score, color];
             user++;
             result1["Users"] = user;

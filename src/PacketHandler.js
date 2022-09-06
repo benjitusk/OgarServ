@@ -60,7 +60,7 @@ PacketHandler.prototype.handleMessage = function (message) {
             this.protocol = 5;
         }
 
-        if (this.protocol == 5 && this.socket.playerTracker.origen == 'ogar.mivabe.nl') {
+        if (this.protocol == 5 && this.socket.playerTracker.origin == 'ogar.mivabe.nl') {
             this.gameServer.sendChatMessage(null, this.socket.playerTracker, "New Beta Client active! See main page for the link and give it a try.");
         }
 
@@ -99,7 +99,7 @@ PacketHandler.prototype.handleMessage = function (message) {
         case 16:
             // Mouse
             var client = this.socket.playerTracker;
-            if(!client.freeMouse) break;
+            if (!client.freeMouse) break;
 
             if (message.length == 13) {
                 // protocol late 5, 6, 7
@@ -141,11 +141,11 @@ PacketHandler.prototype.handleMessage = function (message) {
             break;
         case 24:
             // Pressed T - Minion stop moving
-            this.socket.playerTracker.minionFrozen =! this.socket.playerTracker.minionFrozen;
+            this.socket.playerTracker.minionFrozen = !this.socket.playerTracker.minionFrozen;
             break;
         case 25:
             // Pressed P - Minion go collect food
-            this.socket.playerTracker.collectPellets =! this.socket.playerTracker.collectPellets;
+            this.socket.playerTracker.collectPellets = !this.socket.playerTracker.collectPellets;
             break;
         case 104:
             // Tunr on/off Minimap
@@ -155,10 +155,10 @@ PacketHandler.prototype.handleMessage = function (message) {
         case 90:
             // Send Server Info
             this.socket.sendPacket(new Packet.ServerInfo(process.uptime().toFixed(0),
-                                                         this.gameServer.sinfo.humans,
-                                                         this.gameServer.config.borderWidth,
-                                                         this.gameServer.nodes.length,
-                                                         this.gameServer.config.serverGamemode));
+                this.gameServer.sinfo.humans,
+                this.gameServer.config.borderWidth,
+                this.gameServer.nodes.length,
+                this.gameServer.config.serverGamemode));
             break;
         case 99:
             // Chat
@@ -166,7 +166,7 @@ PacketHandler.prototype.handleMessage = function (message) {
                 break;
 
             var flags = reader.readUInt8();    // flags
-            var rvLength = (flags & 2 ? 4:0) + (flags & 4 ? 8:0) + (flags & 8 ? 16:0);
+            var rvLength = (flags & 2 ? 4 : 0) + (flags & 4 ? 8 : 0) + (flags & 8 ? 16 : 0);
             if (message.length < 3 + rvLength) // second validation
                 break;
 
@@ -179,8 +179,7 @@ PacketHandler.prototype.handleMessage = function (message) {
 
             text = text.trim();
 
-            if(text.length > 1)
-            {
+            if (text.length > 1) {
                 // Profanity filter
                 text = this.WordScan(text);
                 this.gameServer.onChatMessage(this.socket.playerTracker, null, text);
@@ -229,10 +228,10 @@ PacketHandler.prototype.setNickname = function (text) {
     }
 
     name = name.trim();
-    if(name != "") {
-        if(this.socket.isConnected != null)
+    if (name != "") {
+        if (this.socket.isConnected != null)
             name = this.WordScan(name);
-        if(name == '\uD83D\uDCE2')
+        if (name == '\uD83D\uDCE2')
             name = 'Noob';
 
         // Weird name, lets call it Cell + pid Number
@@ -247,11 +246,11 @@ PacketHandler.prototype.setNickname = function (text) {
         while (s.length < 4) s = "0" + s;
         name = "Cell" + s;
     }
-    if(skin != null) skin = skin.trim();
+    if (skin != null) skin = skin.trim();
     this.socket.playerTracker.joinGame(name, skin);
 };
 
-PacketHandler.prototype.WordScan = function(line) {
+PacketHandler.prototype.WordScan = function (line) {
     // a few bad words...
     line = line.replace(/isis/gi, "kiss");
     line = line.replace(/faggot/gi, "cloud");

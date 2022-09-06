@@ -26,7 +26,7 @@ function PlayerTracker(gameServer, socket) {
     this.isMassChanged = true;
     this.borderCounter = 0;
     this.MiniMap = false;
-    this.origen;
+    this.origin;
     this.stats = {
         score: 0,
         playereat: 0,
@@ -141,10 +141,10 @@ PlayerTracker.prototype.setName = function (name) {
         this._nameUtf8 = null;
         return;
     }
-    var writer = new BinaryWriter()
+    var writer = new BinaryWriter();
     writer.writeStringZeroUnicode(name);
     this._nameUnicode = writer.toBuffer();
-    writer = new BinaryWriter()
+    writer = new BinaryWriter();
     writer.writeStringZeroUtf8(name);
     this._nameUtf8 = writer.toBuffer();
 };
@@ -159,7 +159,7 @@ PlayerTracker.prototype.setSkin = function (skin) {
         this._skinUtf8 = null;
         return;
     }
-    var writer = new BinaryWriter()
+    var writer = new BinaryWriter();
     writer.writeStringZeroUtf8(skin);
     this._skinUtf8 = writer.toBuffer();
 };
@@ -173,15 +173,15 @@ PlayerTracker.prototype.getSkin = function () {
 
 PlayerTracker.prototype.getNameUtf8 = function () {
     return this._nameUtf8;
-}
+};
 
 PlayerTracker.prototype.getNameUnicode = function () {
     return this._nameUnicode;
-}
+};
 
 PlayerTracker.prototype.getSkinUtf8 = function () {
     return this._skinUtf8;
-}
+};
 
 PlayerTracker.prototype.getColor = function (color) {
     return this.color;
@@ -222,7 +222,7 @@ PlayerTracker.prototype.updateMass = function () {
         this._score = 0;
     } else {
         this._score = totalScore;
-        if(totalScore > this.stats.score) this.stats.score = totalScore;
+        if (totalScore > this.stats.score) this.stats.score = totalScore;
         this._scale = Math.pow(Math.min(128 / totalSize, 1), 0.4); //64
     }
     this.isMassChanged = false;
@@ -234,18 +234,18 @@ PlayerTracker.prototype.massChanged = function () {
 
 // Functions
 PlayerTracker.prototype.resetstats = function () {
-    if(this.stats.score > 0) {
+    if (this.stats.score > 0) {
         // If we have MySQL dump it to MySQL
-        if(this.gameServer.sqlconfig.host != '') {
+        if (this.gameServer.sqlconfig.host != '') {
             var ip = "BOT";
             if (typeof this.socket.remoteAddress != 'undefined' && this.socket.remoteAddress != 'undefined') ip = this.socket.remoteAddress;
 
-            if(ip != "BOT" && (this.stats.score / 100) > 500 ) {
+            if (ip != "BOT" && (this.stats.score / 100) > 500) {
                 this.gameServer.mysql.writeScore(this._name, this._skin.substring(1), ip, this.stats, this.gameServer.sqlconfig.table);
             }
         }
         // And Reset it
-        this.stats = {score: 0, playereat: 0, viruseat: 0, foodeat: 0, surpeat: 0, playstart: 0};
+        this.stats = { score: 0, playereat: 0, viruseat: 0, foodeat: 0, surpeat: 0, playstart: 0 };
     }
 };
 
@@ -300,16 +300,16 @@ PlayerTracker.prototype.checkConnection = function () {
         if (this.cells.length || dt >= this.gameServer.config.playerDisconnectTime) {
             // Remove all client cells
             var cells = this.cells;
-            for (var i = 0, node, size, len = cells.length ; i < len; i++) {
+            for (var i = 0, node, size, len = cells.length; i < len; i++) {
                 node = this.socket.playerTracker.cells[0]; //cells[i];
-                if(!node) continue;
+                if (!node) continue;
                 // Eject Mass Explode Effect
-                if(this.gameServer.config.playerDisconnectBoom) {
+                if (this.gameServer.config.playerDisconnectBoom) {
                     size = node.getSize();
                     var color = node.getColor();
                     var pos = node.position;
                     this.gameServer.removeNode(node);
-                    while(size >= loss) {
+                    while (size >= loss) {
                         size -= loss;
                         this.gameServer.ejectBoom(pos, color);
                     }
@@ -360,7 +360,7 @@ PlayerTracker.prototype.updateTick = function () {
         if (this.freeRoam || this.getSpectateTarget() == null) {
             // free roam
             this.updateCenterFreeRoam();
-            if(!this.freeMouse) this._scale = 0.20; else this._scale = this.gameServer.config.serverSpectatorScale; //0.079 = full with;
+            if (!this.freeMouse) this._scale = 0.20; else this._scale = this.gameServer.config.serverSpectatorScale; //0.079 = full with;
         } else {
             // spectate target
             return;
@@ -374,10 +374,10 @@ PlayerTracker.prototype.updateTick = function () {
 };
 
 PlayerTracker.prototype.sendUpdate = function () {
-    if (this.isRemoved|| 
+    if (this.isRemoved ||
         !this.socket.packetHandler.protocol ||
-        !this.socket.isConnected || 
-        !this.socket._socket.writable || 
+        !this.socket.isConnected ||
+        !this.socket._socket.writable ||
         this.socket.readyState != this.socket.OPEN) {
         // do not send update for disconnected clients
         // also do not send if initialization is not complete yet
@@ -442,11 +442,11 @@ PlayerTracker.prototype.sendUpdate = function () {
         newIndex++;
         oldIndex++;
     }
-    for (; newIndex < this.viewNodes.length; ) {
+    for (; newIndex < this.viewNodes.length;) {
         addNodes.push(this.viewNodes[newIndex]);
         newIndex++;
     }
-    for (; oldIndex < this.clientNodes.length; ) {
+    for (; oldIndex < this.clientNodes.length;) {
         var node = this.clientNodes[oldIndex];
         if (node.isRemoved && node.getKiller() != null && node.owner != node.getKiller().owner)
             eatNodes.push(node);
@@ -458,10 +458,10 @@ PlayerTracker.prototype.sendUpdate = function () {
 
     // Send packet
     this.socket.sendPacket(new Packet.UpdateNodes(
-        this, 
-        addNodes, 
-        updNodes, 
-        eatNodes, 
+        this,
+        addNodes,
+        updNodes,
+        eatNodes,
         delNodes));
 
     // Update leaderboard
@@ -549,7 +549,7 @@ PlayerTracker.prototype.pressQ = function () {
 
 PlayerTracker.prototype.pressW = function () {
     if (this.spectate) {
-        if(this.freeMouse) {
+        if (this.freeMouse) {
             this.centerPos.x = 0;
             this.centerPos.y = 0;
             this.mouse.x = this.centerPos.x;
