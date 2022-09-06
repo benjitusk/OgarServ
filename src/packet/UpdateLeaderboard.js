@@ -25,7 +25,7 @@ UpdateLeaderboard.prototype.build = function (protocol) {
         default:
             return null;
     }
-}
+};
 
 // UserText
 UpdateLeaderboard.prototype.buildUserText = function (protocol) {
@@ -58,7 +58,7 @@ UpdateLeaderboard.prototype.buildFfa5 = function () {
     var writer = new BinaryWriter();
     writer.writeUInt8(0x31);                                // Packet ID
 
-    if(this.packetLB == '')
+    if (this.packetLB == '')
         writer.writeUInt32(this.leaderboard.length >>> 0);      // Number of elements
     else
         writer.writeUInt32(1 + this.leaderboard.length >>> 0);      // Number of elements
@@ -80,8 +80,8 @@ UpdateLeaderboard.prototype.buildFfa5 = function () {
             writer.writeUInt16(0);
     }
 
-    if(this.packetLB != '') {
-        writer.writeUInt32(-1);
+    if (this.packetLB != '') {
+        writer.writeUInt32(4294967295);
         writer.writeStringZeroUnicode(this.packetLB);
     }
 
@@ -97,7 +97,7 @@ UpdateLeaderboard.prototype.buildFfa6 = function (protocol) {
     var writer = new BinaryWriter();
     writer.writeUInt8(0x31);                                // Packet ID
 
-    if(this.packetLB == '')
+    if (this.packetLB == '')
         writer.writeUInt32(this.leaderboard.length >>> 0);
     else
         writer.writeUInt32(1 + this.leaderboard.length >>> 0);
@@ -107,7 +107,7 @@ UpdateLeaderboard.prototype.buildFfa6 = function (protocol) {
         if (item == null) return null;  // bad leaderboardm just don't send it
 
         name = item._nameUtf8;
-        if(protocol == 7) name = item._nameUnicode;
+        if (protocol == 7) name = item._nameUnicode;
 
         var id = item == player ? 1 : 0;
 
@@ -118,10 +118,10 @@ UpdateLeaderboard.prototype.buildFfa6 = function (protocol) {
             writer.writeUInt8(0);
     }
 
-    if(this.packetLB != '') {
+    if (this.packetLB != '') {
         writer.writeUInt32(4294967295);
-        if(protocol != 7) writer.writeStringZeroUtf8(this.packetLB);
-        if(protocol == 7) writer.writeStringZeroUnicode(this.packetLB);
+        if (protocol != 7) writer.writeStringZeroUtf8(this.packetLB);
+        if (protocol == 7) writer.writeStringZeroUnicode(this.packetLB);
     }
 
     return writer.toBuffer();
